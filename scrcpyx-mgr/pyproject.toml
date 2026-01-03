@@ -1,5 +1,5 @@
 [project]
-name = "scrcpyx-mgr"
+name = "scrcpyx"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
@@ -11,6 +11,10 @@ dependencies = [
 
 [dependency-groups]
 dev = [
+    "pyinstaller",
     "grpcio-tools>=1.76.0",
 ]
 
+[build-system]
+requires = ["uv_build>=0.9.17"]
+build-backend = "uv_build"
