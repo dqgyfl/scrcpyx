@@ -4,7 +4,8 @@ import asyncio
 import ssl
 from typing import Optional
 
-from scrcpyx.mgr.v1.server.service.impl.scrcpyx_mgr_route_service import Backend, get_route
+from scrcpyx.mgr.v1.server.service.impl.scrcpyx_mgr_route_service import Backend, get_route, delete_session, \
+    set_session, get_session
 
 # ----------------------------
 # Configuration
@@ -13,14 +14,14 @@ from scrcpyx.mgr.v1.server.service.impl.scrcpyx_mgr_route_service import Backend
 #     "did.dev.com": ("127.0.0.1", 27183),
 #     "api.example.com": ("gf.dev.sai", 80),
 # }
-DEFAULT_BACKEND: Backend = ("127.0.0.1", 443)
+DEFAULT_BACKEND: Backend = ("127.0.0.1", 50052)
 
 SERVER_CERT = "pki/tls.crt"
 SERVER_KEY = "pki/tls.key"
 CA_CERT = "pki/ca.crt"
 
 LISTEN_HOST = "0.0.0.0"
-LISTEN_PORT = 4430
+LISTEN_PORT = 50051
 
 
 # ----------------------------
@@ -73,19 +74,25 @@ async def handle_client(reader: asyncio.StreamReader, writer: asyncio.StreamWrit
         backend = DEFAULT_BACKEND
 
     print(f"[INFO] Client SNI: {sni}, routing to {backend}")
-
-    # Extract client certificate info
     cert = ssl_sock.getpeercert()
     print(f"[INFO] Client certificate: {cert}")
 
-    # Connect to backend
-    backend_reader, backend_writer = await asyncio.open_connection(*backend)
+    session = await get_session(sni)
+    if session is not None:
+        await delete_session(sni)
 
-    # Relay data both ways
-    await asyncio.gather(
-        relay(reader, backend_writer),
-        relay(backend_reader, writer),
-    )
+    try:
+        # Connect to backend
+        backend_reader, backend_writer = await asyncio.open_connection(*backend)
+
+        # Relay data both ways
+        await asyncio.gather(
+            relay(reader, backend_writer),
+            relay(backend_reader, writer),
+        )
+    finally:
+        if session is not None:
+            session.close()
 
 
 # ----------------------------

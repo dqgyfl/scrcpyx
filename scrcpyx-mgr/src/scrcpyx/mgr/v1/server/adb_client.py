@@ -1,24 +1,75 @@
 import asyncio
 import subprocess
-from typing import List
+from dataclasses import dataclass
+from typing import List, Optional
 
 
-async def run_adb_async(args: List[str]):
-    print(" ".join(args))
+@dataclass
+class AdbResult:
+    returncode: int
+    stdout: Optional[str] = None
+    stderr: Optional[str] = None
+
+
+async def run_adb_async(args: List[str], stream_output: bool = True) -> AdbResult:
     proc = await asyncio.create_subprocess_exec(
         "adb", *args,
         stdout=asyncio.subprocess.PIPE,
-        stderr=asyncio.subprocess.STDOUT
+        stderr=asyncio.subprocess.STDOUT if stream_output else asyncio.subprocess.PIPE
     )
-    print("Started:", proc.pid)
-    while True:
-        line = await proc.stdout.readline()
-        if not line:
-            break
-        print(line.decode().strip())
-    await proc.wait()
-    print("Exited:", proc.pid)
-    return proc
+
+    print("Started:", proc.pid, " ".join(args))
+
+    try:
+        if stream_output:
+            # live streaming mode
+            while True:
+                line = await proc.stdout.readline()
+                if not line:
+                    break
+                print(line.decode().strip())
+
+            await proc.wait()
+            return AdbResult(proc.returncode)
+
+        else:
+            # capture mode
+            stdout, stderr = await proc.communicate()
+            return AdbResult(
+                proc.returncode,
+                stdout.decode().strip(),
+                stderr.decode().strip() if stderr else ""
+            )
+
+    except asyncio.CancelledError:
+        # 🔥 cancellation path — kill the subprocess
+        print(f"Cancelling, killing ADB process {proc.pid}")
+        proc.kill()
+
+        try:
+            await proc.wait()
+        except Exception:
+            pass
+    finally:
+        print("Exited:", proc.pid, " ".join(args))
+
+
+async def run_adb_wit_ret(args: List[str]):
+    # Start the process
+    process = await asyncio.create_subprocess_exec(
+        "adb", *args,
+        stdout=asyncio.subprocess.PIPE,
+        stderr=asyncio.subprocess.PIPE
+    )
+
+    # Wait for the process to finish and capture output
+    stdout, stderr = await process.communicate()
+
+    # Decode output
+    stdout = stdout.decode().strip()
+    stderr = stderr.decode().strip()
+
+    return process.returncode, stdout, stderr
 
 
 def run_adb(args: List[str]):
