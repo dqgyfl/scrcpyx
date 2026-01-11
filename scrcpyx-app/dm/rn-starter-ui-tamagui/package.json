@@ -1,0 +1,13 @@
+{
+  "name": "rn-starter-ui-tamagui",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "tamagui": "^1.138.6",
+    "@tamagui/config": "^1.138.6",
+    "@tamagui/lucide-icons": "^1.138.6",
+    "@tamagui/babel-plugin": "^1.138.6",
+    "@tamagui/metro-plugin": "^1.138.6"
+  }
+}

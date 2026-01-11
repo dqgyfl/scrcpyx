@@ -1,0 +1,1 @@
+export const DANDANPLAY_SECRET = process.env.EXPO_PUBLIC_DANDANPLAY_SECRET;

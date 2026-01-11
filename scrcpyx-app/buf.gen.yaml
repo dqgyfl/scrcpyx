@@ -1,0 +1,39 @@
+version: v2
+managed:
+  enabled: true
+  override:
+    - file_option: go_package_prefix
+      value: github.com/bufbuild/buf-tour/gen
+plugins:
+#  - remote: buf.build/community/stephenh-ts-proto
+#    out: ./gen/ts
+#    opt:
+#      - env=browser
+#      - outputServices=nice-grpc
+#      - outputServices=generic-definitions
+#      - outputJsonMethods=false
+#      - useExactTypes=false
+#  - remote: buf.build/grpc/web:v1.5.0
+#    out: src/gen
+#    opt:
+#      - import_style=commonjs
+#      - mode=grpcwebtext
+  # dependencies
+#  - remote: buf.build/protocolbuffers/js:v3.21.2
+#    out: src/gen
+#    opt:
+#      - target=commonjs
+  # This will invoke protoc-gen-es and write output to src/gen
+  - local: protoc-gen-es
+    out: src/gen
+    opt: target=js
+  - local: protoc-gen-es
+    out: src/gen
+    opt: target=ts
+  # This will invoke protoc-gen-connect-es
+  - local: protoc-gen-connect-es
+    out: src/gen
+    # Add more plugin options here
+    opt: target=ts
+inputs:
+  - directory: proto

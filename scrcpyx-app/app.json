@@ -1,0 +1,59 @@
+{
+  "expo": {
+    "name": "ScrcpyX",
+    "slug": "ScrcpyX",
+    "version": "1.0.4",
+    "orientation": "default",
+    "icon": "./assets/icon.png",
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
+    "splash": {
+      "image": "./assets/icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "userInterfaceStye": "automatic",
+      "package": "com.anonymous.ScrcpyX"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.anonymous.ScrcpyX"
+    },
+    "web": {
+      "favicon": "./assets/icon.png"
+    },
+    "plugins": [
+      "expo-asset",
+      "expo-font",
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "buildArchs": [
+              "arm64-v8a",
+              "x86_64"
+            ],
+            "minSdkVersion": 24,
+            "targetSdkVersion": 35,
+            "compileSdkVersion": 35,
+            "buildToolsVersion": "35.0.1",
+            "enablePngCrunchInReleaseBuilds": false,
+            "enableProguardInReleaseBuilds": false,
+            "enableShrinkResourcesInReleaseBuilds": false
+          }
+        }
+      ],
+      "./app-config.plugin.js",
+      "expo-web-browser"
+    ],
+    "newArchEnabled": true
+  }
+}

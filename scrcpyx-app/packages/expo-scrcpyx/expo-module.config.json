@@ -1,0 +1,9 @@
+{
+  "platforms": ["apple", "android", "web"],
+  "apple": {
+    "modules": ["ExpoScrcpyxModule"]
+  },
+  "android": {
+    "modules": ["expo.modules.scrcpyx.ExpoScrcpyxModule"]
+  }
+}

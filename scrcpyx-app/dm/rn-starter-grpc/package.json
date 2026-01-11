@@ -1,0 +1,15 @@
+{
+  "name": "rn-starter-grpc",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "fast-text-encoding": "^1.0.6",
+    "react-native-fast-encoder": "^0.3.1",
+    "react-native-fetch-api": "^3.0.0",
+    "web-streams-polyfill": "^4.2.0",
+    "@bufbuild/protobuf": "^1.10.1",
+    "@connectrpc/connect": "^1.7.0",
+    "@connectrpc/connect-web": "^1.7.0"
+  }
+}
