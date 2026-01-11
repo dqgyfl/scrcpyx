@@ -1,5 +1,3 @@
-import Select from '@mui/joy/Select';
-import Option from '@mui/joy/Option';
 import {Input, Switch, View} from 'tamagui'
 import {SelectDemoContents} from "@/pages/scrcpyx/SelectCom";
 

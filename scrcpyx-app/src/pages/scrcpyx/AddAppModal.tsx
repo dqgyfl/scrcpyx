@@ -1,4 +1,4 @@
-import {Button, Dialog} from 'tamagui'
+import {Button, Dialog, Text, YStack} from 'tamagui'
 import {useAppStore} from './AppStore'
 import {FormOption} from "@/pages/scrcpyx/XFormField";
 import React, {useState} from "react";
@@ -10,25 +10,20 @@ export default function AddAppModal() {
 
     const option: FormOption = {
         column: [
-            {prop: 'id', label: 'id', type: 'input',},
-            {prop: 'name', label: 'name', type: 'input',},
+            {prop: 'id', label: 'App ID', type: 'input', required: true},
+            {prop: 'name', label: 'App Name', type: 'input', required: true},
+            {prop: 'icon', label: 'App Icon (emoji)', type: 'input'},
             {
-                prop: 'device', label: 'device', type: 'select',
-                options: [
-                    {
-                        value: "com.test.sss",
-                        label: "App",
-                    }
-                ]
+                prop: 'device', 
+                label: 'Package Name', 
+                type: 'input',
+                required: true
             },
             {
-                prop: 'app', label: 'app', type: 'select',
-                options: [
-                    {
-                        value: "aaaa",
-                        label: "boooo",
-                    }
-                ]
+                prop: 'startApp', 
+                label: 'Activity Name', 
+                type: 'input',
+                required: true
             },
         ],
     }
@@ -37,24 +32,70 @@ export default function AddAppModal() {
 
     return <Dialog modal>
         <Dialog.Trigger asChild>
-            <Button icon={Plus}/>
+            <Button 
+                icon={Plus} 
+                borderRadius="$4" 
+                backgroundColor="#4CAF50"
+                color="white"
+                hoverStyle={{backgroundColor: "#45a049"}}
+                pressStyle={{backgroundColor: "#3d8b40"}}
+                size="$4"
+                transition="all 0.2s ease"
+            />
         </Dialog.Trigger>
         <Dialog.Portal>
-            <Dialog.Content>
+            <Dialog.Content 
+                width={500} 
+                borderRadius="$4"
+                backgroundColor="#ffffff"
+                padding={20}
+            >
+                <Dialog.Title 
+                    fontSize={20} 
+                    fontWeight="bold"
+                    color="#333333"
+                    marginBottom={20}
+                >
+                    Add New App
+                </Dialog.Title>
                 <DynamicForm
                     option={option}
                     model={model}
                     onChange={setModel}
                     onSave={addApp}
                 />
-                <Button
-                    onPress={() => {
-                        addApp(model)
-                        return false
-                    }}
+                <YStack 
+                    flexDirection="row" 
+                    justifyContent="flex-end" 
+                    marginTop={20} 
+                    gap={10}
                 >
-                    Save
-                </Button>
+                    <Dialog.Close asChild>
+                        <Button 
+                            variant="outline" 
+                            borderRadius="$4"
+                            size="$4"
+                            transition="all 0.2s ease"
+                        >
+                            Cancel
+                        </Button>
+                    </Dialog.Close>
+                    <Button
+                        onPress={() => {
+                            addApp(model)
+                            return false
+                        }}
+                        borderRadius="$4"
+                        backgroundColor="#4CAF50"
+                        color="white"
+                        hoverStyle={{backgroundColor: "#45a049"}}
+                        pressStyle={{backgroundColor: "#3d8b40"}}
+                        size="$4"
+                        transition="all 0.2s ease"
+                    >
+                        Save App
+                    </Button>
+                </YStack>
             </Dialog.Content>
         </Dialog.Portal>
     </Dialog>

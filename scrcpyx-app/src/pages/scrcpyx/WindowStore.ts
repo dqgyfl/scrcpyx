@@ -44,6 +44,10 @@ export const useWindowStore = create<WindowStore>()(
             // const id = `${appId}-${Date.now()}`
             const id = appId
             const windows = get().windows
+            const windowCount = Object.keys(windows).length
+            // Add slight offset for each new window
+            const offsetX = windowCount * 20
+            const offsetY = windowCount * 20
             set({
                 windows: {
                     ...windows,
@@ -51,8 +55,8 @@ export const useWindowStore = create<WindowStore>()(
                         id,
                         appId,
                         props,
-                        x: 100,
-                        y: 100,
+                        x: 100 + offsetX,
+                        y: 100 + offsetY,
                         width: 600,
                         height: 400,
                         zIndex: get().topZ + 1,
