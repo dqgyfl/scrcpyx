@@ -1,12 +1,44 @@
 import {Button, Dialog, Text, YStack} from 'tamagui'
 import {useAppStore} from './AppStore'
 import {FormOption} from "@/pages/scrcpyx/XFormField";
-import React, {useState} from "react";
-import {DynamicForm} from "@/pages/scrcpyx/XFrom";
+import React, {useEffect, useState} from "react";
+import {DynamicForm} from "@/pages/scrcpyx/XForm";
 import {Plus} from "@tamagui/lucide-icons";
+import {useListDevices, useListApps} from "@/api/scrcpyx_mgr";
 
 export default function AddAppModal() {
     const {addApp} = useAppStore()
+    const {data: devices, isLoading: isLoadingDevices} = useListDevices();
+    
+    const [model, setModel] = useState({})
+    const [devicesOptions, setDevicesOptions] = useState<{ label: string; value: string }[]>([]);
+    const [appsOptions, setAppsOptions] = useState<{ label: string; value: string }[]>([]);
+    
+    // Track selected device to fetch apps
+    const selectedDeviceId = model.device as string;
+    const {data: apps, isLoading: isLoadingApps} = useListApps(selectedDeviceId || '');
+
+    useEffect(() => {
+        if (devices?.devices) {
+            const options = devices.devices.map(device => ({
+                label: `${device.model || 'Unknown Device'} (${device.did || 'Unknown ID'})`,
+                value: device.did || ''
+            }));
+            setDevicesOptions(options);
+        }
+    }, [devices]);
+    
+    useEffect(() => {
+        if (apps?.apps && selectedDeviceId) {
+            const options = apps.apps.map(app => ({
+                label: app.packageName,
+                value: app.packageName
+            }));
+            setAppsOptions(options);
+        } else {
+            setAppsOptions([]);
+        }
+    }, [apps, selectedDeviceId]);
 
     const option: FormOption = {
         column: [
@@ -15,30 +47,39 @@ export default function AddAppModal() {
             {prop: 'icon', label: 'App Icon (emoji)', type: 'input'},
             {
                 prop: 'device', 
-                label: 'Package Name', 
-                type: 'input',
-                required: true
+                label: 'Device', 
+                type: 'select',
+                required: true,
+                options: devicesOptions
             },
             {
-                prop: 'startApp', 
-                label: 'Activity Name', 
-                type: 'input',
-                required: true
+                prop: 'packageName',
+                label: 'Package Name',
+                type: 'select',
+                required: false,
+                options: appsOptions,
+                disabled: isLoadingApps || !selectedDeviceId
             },
+            { prop: 'args', label: 'Arguments', type: 'input', required: false, placeholder: 'Command line arguments for the app' },
         ],
     }
 
-    const [model, setModel] = useState({})
+    const handleAddApp = () => {
+        addApp({
+            ...model,
+            device: model.device || '',
+            name: model.name || '',
+            id: model.id || '',
+            packageName: model.packageName || '',
+            args: typeof model.args === 'string' ? model.args.split(' ').filter(arg => arg.trim() !== '') : []
+        });
+    };
 
     return <Dialog modal>
         <Dialog.Trigger asChild>
             <Button 
                 icon={Plus} 
                 borderRadius="$4" 
-                backgroundColor="#4CAF50"
-                color="white"
-                hoverStyle={{backgroundColor: "#45a049"}}
-                pressStyle={{backgroundColor: "#3d8b40"}}
                 size="$4"
                 transition="all 0.2s ease"
             />
@@ -62,40 +103,8 @@ export default function AddAppModal() {
                     option={option}
                     model={model}
                     onChange={setModel}
-                    onSave={addApp}
+                    onSave={handleAddApp}
                 />
-                <YStack 
-                    flexDirection="row" 
-                    justifyContent="flex-end" 
-                    marginTop={20} 
-                    gap={10}
-                >
-                    <Dialog.Close asChild>
-                        <Button 
-                            variant="outline" 
-                            borderRadius="$4"
-                            size="$4"
-                            transition="all 0.2s ease"
-                        >
-                            Cancel
-                        </Button>
-                    </Dialog.Close>
-                    <Button
-                        onPress={() => {
-                            addApp(model)
-                            return false
-                        }}
-                        borderRadius="$4"
-                        backgroundColor="#4CAF50"
-                        color="white"
-                        hoverStyle={{backgroundColor: "#45a049"}}
-                        pressStyle={{backgroundColor: "#3d8b40"}}
-                        size="$4"
-                        transition="all 0.2s ease"
-                    >
-                        Save App
-                    </Button>
-                </YStack>
             </Dialog.Content>
         </Dialog.Portal>
     </Dialog>

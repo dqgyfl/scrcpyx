@@ -4,7 +4,7 @@
   "main": "expo/AppEntry.js",
   "scripts": {
     "start": "expo start",
-    "android": "DISABLE_SVG=trueexpo run:android --all-arch false",
+    "android": "DISABLE_SVG=true expo run:android --all-arch false",
     "android-release": "expo run:android --variant release",
     "ios": "expo run:ios",
     "web": "expo start --web",

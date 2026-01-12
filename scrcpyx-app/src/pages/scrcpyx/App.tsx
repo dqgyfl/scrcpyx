@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {DynamicForm} from '@/pages/scrcpyx/XFrom';
+import {DynamicForm} from '@/pages/scrcpyx/XForm';
 import {FormOption} from "@/pages/scrcpyx/XFormField";
 
 export default function AdvanceDemo() {

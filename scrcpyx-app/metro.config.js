@@ -29,6 +29,7 @@ config = {
     ...config,
     resolver: {
         ...config.resolver,
+        unstable_enablePackageExports: false,
         // unstable_enablePackageExports: true,
         platforms: ['ios', 'android', 'web'],
         sourceMap: false

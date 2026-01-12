@@ -9,6 +9,7 @@ import { Dimensions } from "react-native";
 import React from 'react';
 import { Activity, Airplay, Fullscreen, Home, Menu, Minimize, StepBack, X as CloseIcon } from '@tamagui/lucide-icons';
 import { useWindowManager } from "@/pages/scrcpyx/WindowManager";
+import ScrcpyXApp from "@/pages/scrcpyx/apps/ScrcpyXApp";
 
 function clamp(val, min, max) {
     return Math.min(Math.max(val, min), max);
@@ -18,7 +19,6 @@ export default function Window({ window }: { window: any }) {
     const { apps } = useAppStore()
     const { closeWindow, toggleFullscreen, toggleMinimize } = useWindowManager()
     const app = apps.find((a) => a.id === window.appId)
-    if (!app || window.minimized) return null
 
     const translationX = useSharedValue(0);
     const translationY = useSharedValue(0);
@@ -78,6 +78,8 @@ export default function Window({ window }: { window: any }) {
             tooltip: "Fullscreen"
         }
     ]
+
+    if (!app || window.minimized) return null
 
     return (
         <Animated.View
@@ -142,12 +144,12 @@ export default function Window({ window }: { window: any }) {
                                         onPress={a.onPress}
                                         variant="ghost"
                                         color="#64748b"
-                                        hoverStyle={{ 
+                                        hoverStyle={{
                                             backgroundColor: "#e2e8f0",
                                             borderRadius: "$3",
                                             transition: "all 0.2s ease"
                                         }}
-                                        pressStyle={{ 
+                                        pressStyle={{
                                             backgroundColor: "#cbd5e1",
                                             borderRadius: "$3"
                                         }}
@@ -161,12 +163,12 @@ export default function Window({ window }: { window: any }) {
                                     variant="ghost"
                                     icon={CloseIcon}
                                     color="#ef4444"
-                                    hoverStyle={{ 
+                                    hoverStyle={{
                                         backgroundColor: "#fee2e2",
                                         borderRadius: "$3",
                                         transition: "all 0.2s ease"
                                     }}
-                                    pressStyle={{ 
+                                    pressStyle={{
                                         backgroundColor: "#fecaca",
                                         borderRadius: "$3"
                                     }}
@@ -178,43 +180,7 @@ export default function Window({ window }: { window: any }) {
                     </GestureDetector>
                 </Card.Header>
 
-                <YStack
-                    alignItems="center"
-                    justifyContent="center"
-                    gap={20}
-                    padding={24}
-                    flex={1}
-                    backgroundColor="linear-gradient(135deg, #1e293b 0%, #0f172a 100%)"
-                    borderBottomLeftRadius="$0"
-                    borderBottomRightRadius="$0"
-                >
-                    <YStack
-                        alignItems="center"
-                        justifyContent="center"
-                        gap={12}
-                        padding={32}
-                        borderRadius="$4"
-                        backgroundColor="rgba(255, 255, 255, 0.05)"
-                        borderWidth={1}
-                        borderColor="rgba(255, 255, 255, 0.1)"
-                    >
-                        <Text 
-                            color="#f1f5f9" 
-                            fontSize={28} 
-                            fontWeight="600"
-                            letterSpacing={-0.5}
-                        >
-                            [Mock scrcpy view]
-                        </Text>
-                        <Text 
-                            color="#94a3b8" 
-                            fontSize={15}
-                            fontWeight="500"
-                        >
-                            {app.name} - {app.device}
-                        </Text>
-                    </YStack>
-                </YStack>
+                <ScrcpyXApp app={app}/>
 
                 <Card.Footer
                     backgroundColor="linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%)"
@@ -231,8 +197,8 @@ export default function Window({ window }: { window: any }) {
                     >
                         <XStack gap={8} alignItems="center">
                             <Activity size={16} color="#64748b" />
-                            <Text 
-                                fontSize={13} 
+                            <Text
+                                fontSize={13}
                                 color="#475569"
                                 fontWeight="500"
                             >
@@ -240,15 +206,15 @@ export default function Window({ window }: { window: any }) {
                             </Text>
                         </XStack>
                         <XStack gap={16} alignItems="center">
-                            <Text 
-                                fontSize={13} 
+                            <Text
+                                fontSize={13}
                                 color="#64748b"
                                 fontWeight="500"
                             >
                                 Resolution: 1920x1080
                             </Text>
-                            <Text 
-                                fontSize={13} 
+                            <Text
+                                fontSize={13}
                                 color="#64748b"
                                 fontWeight="500"
                             >

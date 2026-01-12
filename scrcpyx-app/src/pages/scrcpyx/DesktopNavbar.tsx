@@ -1,5 +1,6 @@
 import {Input, Text, View, XStack} from 'tamagui'
 import AddAppModal from "@/pages/scrcpyx/AddAppModal";
+import SettingsModal from "@/pages/scrcpyx/SettingsModal";
 import {useAppStore} from "@/pages/scrcpyx/AppStore";
 
 export default function DesktopNavbar({}) {
@@ -42,7 +43,10 @@ export default function DesktopNavbar({}) {
                     hoverStyle={{backgroundColor: "#e0e0e0"}}
                 />
             </View>
-            <AddAppModal/>
+            <XStack gap={10}>
+                <AddAppModal/>
+                <SettingsModal/>
+            </XStack>
         </XStack>
     )
 }

@@ -20,7 +20,7 @@ export const useMediaLibrary = create<MediaLibraryStore>()(
     persist((set) => ({
             ml: {
                 id: "scans/bd",
-                srvUrl: "http://tau-player.srv",
+                srvUrl: "http://192.168.18.144:50051",
                 mode: "front",
                 section: true
             },

@@ -15,6 +15,7 @@ interface AppStore {
     apps: AppConfig[]
     searchQuery: string
     addApp: (app: AppConfig) => void
+    removeApp: (appId: string) => void
     setSearchQuery: (query: string) => void
     filteredApps: () => AppConfig[]
     togglePinApp: (appId: string) => void
@@ -62,6 +63,7 @@ export const useAppStore = create<AppStore>()(
         ],
         searchQuery: "",
         addApp: (app) => set((state) => ({apps: [...state.apps, app]})),
+        removeApp: (appId) => set((state) => ({apps: state.apps.filter(app => app.id !== appId)})),
         setSearchQuery: (query) => set({searchQuery: query}),
         filteredApps: () => {
             const {apps, searchQuery} = get()

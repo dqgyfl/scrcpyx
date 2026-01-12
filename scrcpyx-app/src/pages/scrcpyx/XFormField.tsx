@@ -8,6 +8,7 @@ export type FormColumn = {
     span?: number
     display?: boolean | ((model: any) => boolean)
     disabled?: boolean | ((model: any) => boolean)
+    required?: boolean
     rules?: ((value: any, model: any) => string | null)[]
     options?: { label: string; value: any }[]
 }
@@ -49,7 +50,7 @@ export function FormField({
             )
         case 'select':
             return (
-                <SelectDemoContents val={value} setVal={onChange} items={column.options} {...props} />
+                <SelectDemoContents val={value} setVal={onChange} items={column.options} required={column.required} {...props} />
             )
         case 'switch':
             return (

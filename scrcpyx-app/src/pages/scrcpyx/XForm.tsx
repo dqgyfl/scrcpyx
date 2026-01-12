@@ -8,6 +8,7 @@ export function DynamicForm({
                                 option,
                                 model,
                                 onChange,
+                                onSave,
                             }: {
     option: FormOption
     model: any
@@ -34,6 +35,22 @@ export function DynamicForm({
             ? col.disabled(model)
             : col.disabled === true
 
+    const handleSave = () => {
+        // Basic validation for required fields
+        const requiredFields = groups.flatMap(group => 
+            group.column.filter(col => col.required && isDisplay(col))
+        );
+        
+        const missingFields = requiredFields.filter(col => !model[col.prop]);
+        
+        if (missingFields.length === 0) {
+            onSave(model);
+        } else {
+            // In a real app, you'd show validation errors
+            console.warn('Missing required fields:', missingFields.map(f => f.label));
+        }
+    };
+
     return (
         <YStack gap="$4">
             {groups.map((group, gi) => (
@@ -54,7 +71,9 @@ export function DynamicForm({
                                           width={`${(col.span ?? 24) / 24 * 100}%`}
                                           gap="$2"
                                 >
-                                    <Label width={64} fontSize="$2">{col.label}</Label>
+                                    <Label width={64} fontSize="$2">
+                                        {col.label}{col.required ? ' *' : ''}
+                                    </Label>
                                     <FormField
                                         flex={1}
                                         column={col}
@@ -68,6 +87,11 @@ export function DynamicForm({
                     </YStack>
                 </Card>
             ))}
+            <XStack justifyContent="flex-end">
+                <Button onPress={handleSave}>
+                    Save
+                </Button>
+            </XStack>
         </YStack>
     )
 }
